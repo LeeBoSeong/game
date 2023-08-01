@@ -11,7 +11,7 @@
     </select>
 
 	<select id="selectBoardInfo" resultType="com.game.vo.BoardInfoVO">
-        select * from BOARD_INFO WHERE BI_NUM=#{biNUm}
+        select * from BOARD_INFO WHERE BI_NUM=#{biNum}
     </select>
 	
 	<insert id="insertBoardInfo" parameterType="com.game.vo.BoardInfoVO">

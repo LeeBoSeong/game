@@ -4,10 +4,22 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.game.mapper.BoardInfoMapper">
-   
-
     <select id="selectBoardInfoList" resultType="com.game.vo.BoardInfoVO">
-        select * from BOARD_INFO
+        select BI.*, UI.UI_NAME from BOARD_INFO BI
+        INNER JOIN USER_INFO UI ON BI.UI_NUM = UI.UI_NUM 
+        <where>
+			<if test='searchStr != null and searchStr != ""'>
+				<if test='searchType=="1" or searchType=="4" or searchType=="6" or searchType=="7"'>
+					OR BI_TITLE LIKE CONCAT('%',#{searchStr},'%')
+				</if>
+				<if test='searchType=="2" or searchType=="5" or searchType=="6" or searchType=="7"'>
+					OR UI_NAME LIKE CONCAT('%',#{searchStr},'%')
+				</if>
+				<if test='searchType=="1" or searchType=="4" or searchType=="6" or searchType=="7"'>
+					OR BI_CONTENT LIKE CONCAT('%',#{searchStr},'%')
+				</if>
+			</if>
+        </where>
     </select>
 
 	<select id="selectBoardInfo" resultType="com.game.vo.BoardInfoVO">

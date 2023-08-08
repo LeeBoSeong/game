@@ -10,7 +10,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.game.mapper.BoardInfoMapper;
+import com.game.mapper.TestInfoMapper;
+import com.game.mapper.UserInfoMapper;
 import com.game.vo.BoardInfoVO;
+import com.game.vo.TestInfoVO;
+import com.game.vo.UserInfoVO;
 
 public class MybstisSqlSessionFactory {
 
@@ -23,7 +27,7 @@ public class MybstisSqlSessionFactory {
 			SqlSessionFactoryBuilder ssfb = new SqlSessionFactoryBuilder();
 			SSF = ssfb.build(is);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -33,27 +37,9 @@ public class MybstisSqlSessionFactory {
 
 	public static void main(String[] args) {
 		SqlSessionFactory ssf = getSqlSessionFactory();
-		SqlSession session = null;
-		try {
-			session = ssf.openSession(true);
-			BoardInfoMapper biMapper = session.getMapper(BoardInfoMapper.class);
-			BoardInfoVO bi = new BoardInfoVO();
-			System.out.println(biMapper.selectBoardInfoList(bi));
-
-//			bi.setBiTitle("굿");
-//			bi.setBiContent("굿굿굿");
-//			bi.setUiNum(2);
-//			int result = biMapper.insertBoardInfo(bi);
-//			System.out.println(result);
-//
-//			bi.setBiTitle("업데이트");
-//			result = biMapper.updateBoardInfo(bi);
-//			System.out.println(result);
-//			bi.setBiNum(13);
-//			result = biMapper.deleteBoardInfo(bi);
-//			System.out.println(result);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		SqlSession session = ssf.openSession();
+		TestInfoMapper testMapper = session.getMapper(TestInfoMapper.class);
+		List<TestInfoVO> list = testMapper.selecTestInfoList(null);
+		System.out.println(list);
 	}
 }

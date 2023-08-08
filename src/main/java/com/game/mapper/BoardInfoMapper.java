@@ -8,7 +8,7 @@ public interface BoardInfoMapper {
 
 	List<BoardInfoVO> selectBoardInfoList(BoardInfoVO bi);
 
-	BoardInfoVO selectBoardInfo(BoardInfoVO bi);
+	BoardInfoVO selectBoardInfo(String biNum);
 
 	int insertBoardInfo(BoardInfoVO bi);
 

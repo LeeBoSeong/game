@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import javax.websocket.Session;
 import com.game.common.CommonViews;
 import com.game.service.UserInfoService;
 import com.game.service.impl.UserInfoServiceImpl;
+import com.game.vo.UserInfoVO;
 import com.google.gson.Gson;
 
 @WebServlet("/user-info/*")
@@ -32,6 +34,15 @@ public class UserInfoServlet extends HttpServlet {
 		if ("list".equals(cmd)) {
 			json = gson.toJson(uiService.selectUserInfoList(null));
 		} else if ("view".equals(cmd) || "update".equals(cmd)) {
+			int uiNum = Integer.parseInt(request.getParameter("uiNum"));
+			if (uiNum != 0) {
+				for (UserInfoVO map : uiService.selectUserInfoList(null)) {
+					if (map.getUiNum() == (uiNum)) {
+						json = gson.toJson(map);
+						break;
+					}
+				}
+			}
 		}
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
@@ -40,46 +51,32 @@ public class UserInfoServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		String cmd = CommonViews.getCmd(request);
-		if ("update".equals(cmd)) {
-			Map<String, String> userInfo = new HashMap();
-			String uiNum = request.getParameter("uiNum");
-			userInfo.put("uiNum", uiNum);
-			userInfo.put("uiName", request.getParameter("uiName"));
-			userInfo.put("uiId", request.getParameter("uiId"));
-			userInfo.put("uiPwd", request.getParameter("uiPwd"));
-			userInfo.put("uiBirth", request.getParameter("uiBirth"));
-			int result = uiService.updateUserInfo(userInfo);
-			request.setAttribute("msg", "수정 실패");
-			request.setAttribute("url", "/user-info/update?uiNum=" + uiNum);
-			if (result == 1) {
-				request.setAttribute("msg", "수정 성공");
-				request.setAttribute("url", "/user-info/list");
-			}
-		} else if ("delete".equals(cmd)) {
-			int result = uiService.deleteUserInfo(request.getParameter("uiNum"));
-			request.setAttribute("msg", "삭제 실패");
-			request.setAttribute("url", "/user-info/list");
-			if (result == 1) {
-				request.setAttribute("msg", "삭제 성공");
-				request.setAttribute("url", "/user-info/list");
+		request.setCharacterEncoding("UTF-8");
+		BufferedReader br = request.getReader();
+		StringBuffer sb = new StringBuffer();
+		String str = null;
+		while ((str = br.readLine()) != null) {
+			sb.append(str);
+		}
+		Map<String, String> map = gson.fromJson(sb.toString(), Map.class);
+		System.out.println(map);
+		String json = "0";
+
+		if ("delete".equals(cmd)) {
+			String uiNum = map.get("num");
+			System.out.println(uiNum);
+			if (uiNum != null) {
+				json = uiService.deleteUserInfo(uiNum) +"";
+				System.out.println(json);
 			}
 		} else if ("insert".equals(cmd)) {
-			Map<String, String> userInfoMap = new HashMap();
-			userInfoMap.put("uiName", request.getParameter("uiName"));
-			userInfoMap.put("uiId", request.getParameter("uiId"));
-			userInfoMap.put("uiPwd", request.getParameter("uiPwd"));
-			userInfoMap.put("uiDesc", request.getParameter("uiDesc"));
-			userInfoMap.put("uiBirth", request.getParameter("uiBirth"));
-			int result = uiService.insertUserInfo(userInfoMap);
-			request.setAttribute("msg", "등록 실패");
-			request.setAttribute("url", "/user-info/list");
-			if (result == 1) {
-				request.setAttribute("msg", "등록 성공");
-				request.setAttribute("url", "/user-info/list");
+			json = uiService.insertUserInfo(map)+"";
+		} else if ("update".equals(cmd)) {
+			if(map != null) {
+				json = uiService.updateUserInfo(map) + "";
 			}
-		} else if ("login".equals(cmd)) {
+		}else if ("login".equals(cmd)) {
 			String uiId = request.getParameter("uiId");
 			String uiPw = request.getParameter("uiPwd");
 			Map<String, String> userLogIn = uiService.userLogInInfo(uiId);
@@ -98,7 +95,9 @@ public class UserInfoServlet extends HttpServlet {
 				}
 			}
 		}
-		CommonViews.forwordMessahe(request, response);
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.print(json);
 	}
 
 }

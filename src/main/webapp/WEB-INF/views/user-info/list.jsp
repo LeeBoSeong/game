@@ -17,7 +17,7 @@
 	</tr>
 	<tbody id="tbody"></tbody>
 		<tr>
-			<td><button onclick="location.href='/user-info/insert'">등록</button>
+			<td><button onclick="location.href='/views/user-info/insert'">등록</button>
 		<tr>
 </table>
 
@@ -32,11 +32,6 @@ const loadFunc = function() {
 	const searchType = document.querySelector('#searchType');
 	
 	let url = '/user-info/list?';
-//	if(searchStr.value!==''){
-//	url += 'searchType=' + searchType.value + '&searchStr=' + searchStr.value;
-
-//	}
-	
 	xhr.open('GET',url);
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState===4){

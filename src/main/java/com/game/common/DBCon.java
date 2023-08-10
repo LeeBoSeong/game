@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class DBCon {
 	private static final String DRIVER = "org.mariadb.jdbc.Driver";
-	private static final String URL = "jdbc:mariadb://localhost:3307/game";
+	private static final String URL = "jdbc:mariadb://localhost:3306/game";
 	private static final String USER = "root";
-	private static final String PWD = "kd1824java";
+	private static final String PWD = "ll09130731";
 	
 	static {
 		try {

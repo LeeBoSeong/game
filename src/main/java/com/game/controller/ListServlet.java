@@ -13,38 +13,50 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.game.common.CommonViews;
 import com.google.gson.Gson;
 
-
-@WebServlet("/list3/*")
+@WebServlet("/list/*")
 public class ListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private static final List<Map<String, String>> MOCK_LIST;
-    private Gson gson = new Gson();
-    static {
-    	MOCK_LIST = new ArrayList<Map<String,String>>();
-    	for(int i = 1; i <= 100; i++) {
-    		Map<String, String> map = new HashMap<String, String>();
-    		map.put("num", i+"");
-    		map.put("name", "이름" + i);
-    		map.put("age", i+"살");
-    		map.put("address", "서울 어딘가");
-    		MOCK_LIST.add(map);
-    	}
-    }
+	private static final List<Map<String, String>> MOCK_LIST;
+	private Gson gson = new Gson();
+	static {
+		MOCK_LIST = new ArrayList<Map<String, String>>();
+		for (int i = 1; i <= 100; i++) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("num", i + "");
+			map.put("name", "이름" + i);
+			map.put("age", i + "살");
+			map.put("address", "서울 어딘가");
+			MOCK_LIST.add(map);
+		}
+	}
 
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String cmd = CommonViews.getCmd(request);
 		String json = "";
-		json = gson.toJson(MOCK_LIST);
+		if ("list".equals(cmd)) {
+			json = gson.toJson(MOCK_LIST);
+		} else if ("one".equals(cmd)) {
+			String num = request.getParameter("num");
+			if (num != null) {
+				for (Map<String, String> map : MOCK_LIST) {
+					if (map.get("num").equals(num)) {
+						json = gson.toJson(map);
+						break;
+					}
+				}
+			}
+		}
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		out.println(json);
 	}
 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
 		doGet(request, response);
 	}
 

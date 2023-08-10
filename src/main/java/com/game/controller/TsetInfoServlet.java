@@ -1,6 +1,8 @@
 package com.game.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,9 +22,13 @@ public class TsetInfoServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = CommonViews.getCmd(request);
+		
 		String json = "";
 		if("list".equals(cmd)) {
+			response.setContentType("application/json;charset=UTF-8");
 			json = gson.toJson(testService.selecTestInfoList(null));
+			PrintWriter out = response.getWriter();
+			out.print(json);
 		}
 	}
 
